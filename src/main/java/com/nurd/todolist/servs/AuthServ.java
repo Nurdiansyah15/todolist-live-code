@@ -1,5 +1,6 @@
 package com.nurd.todolist.servs;
 
+import com.nurd.todolist.exceptions.override.ConflictException;
 import com.nurd.todolist.models.Role;
 import com.nurd.todolist.models.User;
 import com.nurd.todolist.repos.UserRepo;
@@ -11,6 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Service
@@ -26,7 +29,10 @@ public class AuthServ {
     // register
     public AuthDto.ResponseRegisterDto register(AuthDto.RequestRegisterDto requestRegisterDto) {
         if (userRepo.findByEmail(requestRegisterDto.getEmail()).isPresent()) {
-            throw new IllegalStateException("email already exists");
+            throw new ConflictException("email already exists");
+        }
+        if (userRepo.findByUsername(requestRegisterDto.getUsername()).isPresent()) {
+            throw new ConflictException("username already exists");
         }
 
         User user = new User();
@@ -38,7 +44,7 @@ public class AuthServ {
 
         System.out.println(user);
         userRepo.save(user);
-        return new AuthDto.ResponseRegisterDto(user.getId(), user.getUsername(), user.getEmail());
+        return new AuthDto.ResponseRegisterDto(user.getUsername(), user.getEmail());
     }
 
     // login
@@ -47,7 +53,7 @@ public class AuthServ {
         User user = userRepo.findByEmail(requestLoginDto.getEmail()).orElseThrow(() -> new IllegalStateException("invalid credentials"));
 
         if (!passwordEncoder.matches(requestLoginDto.getPassword(), user.getPassword())) {
-            throw new IllegalStateException("invalid username or password");
+            throw new IllegalStateException("invalid credentials");
         }
 
         String token = jwtService.generateToken(user);
@@ -62,7 +68,7 @@ public class AuthServ {
 
         String refreshToken = requestRefreshTokenDto.getRefreshToken();
         if (refreshToken == null) {
-            throw new IllegalStateException("refresh token not found");
+            throw new IllegalArgumentException("refresh token not found");
         }
 
         String email = jwtService.extractEmail(refreshToken);

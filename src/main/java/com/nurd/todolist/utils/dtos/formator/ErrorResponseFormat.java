@@ -8,6 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class ErrorResponseFormat<T> {
-    private T message;
-    private String error;
+    private String status;
+    private T error;
 }

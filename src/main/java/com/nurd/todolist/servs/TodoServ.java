@@ -1,5 +1,7 @@
 package com.nurd.todolist.servs;
 
+import com.nurd.todolist.exceptions.override.CustomAccessDeniedException;
+import com.nurd.todolist.exceptions.override.CustomNotFoundException;
 import com.nurd.todolist.models.Status;
 import com.nurd.todolist.models.Todo;
 import com.nurd.todolist.models.User;
@@ -10,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -22,11 +26,12 @@ public class TodoServ {
     @Autowired
     private TodoRepo todoRepo;
 
-    public Todo create(TodoDto.Request.Create obj) {
+    public TodoDto.Response.Common create(TodoDto.Request.Create obj) {
 
         User user = authServ.getUserAuthenticated();
 
-        return todoRepo.save(Todo.builder()
+
+        Todo todo = todoRepo.save(Todo.builder()
                 .title(obj.getTitle())
                 .description(obj.getDescription())
                 .dueDate(obj.getDueDate())
@@ -34,6 +39,15 @@ public class TodoServ {
                 .status(Status.PENDING)
                 .user(user)
                 .build());
+
+        return TodoDto.Response.Common.builder()
+                .id(todo.getId().toString())
+                .title(todo.getTitle())
+                .description(todo.getDescription())
+                .dueDate(todo.getDueDate())
+                .createdAt(todo.getCreatedAt())
+                .status(todo.getStatus().toString())
+                .build();
     }
 
     public Page<Todo> findAll(Pageable pageable) {
@@ -103,6 +117,11 @@ public class TodoServ {
     }
 
     public void deleteById(String id) {
+        User user = authServ.getUserAuthenticated();
+        Todo todo = todoRepo.findById(UUID.fromString(id)).orElseThrow(() -> new CustomNotFoundException("Todo with id " + id + " not found"));
+        if (!todo.getUser().getId().equals(user.getId())) {
+            throw new CustomAccessDeniedException("Todo with id " + id + " can't be accessed");
+        }
         todoRepo.deleteById(UUID.fromString(id));
     }
 }

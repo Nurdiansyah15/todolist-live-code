@@ -36,7 +36,7 @@ public class TodoController {
     }
 
     @PostMapping
-    public ResponseEntity<Todo> create(@Valid @RequestBody TodoDto.Request.Create obj) {
+    public ResponseEntity<TodoDto.Response.Common> create(@Valid @RequestBody TodoDto.Request.Create obj) {
         return new ResponseEntity<>(todoServ.create(obj), HttpStatus.CREATED);
     }
 

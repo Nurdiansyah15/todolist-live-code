@@ -22,10 +22,6 @@ public class CustomAuthEntryPoint implements AuthenticationEntryPoint {
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
-        response.getWriter().write(response(authException.getMessage()));
-    }
-
-    private String response(String message) throws IOException {
-        return objectMapper.writeValueAsString(ErrorResponseFormat.builder().message(message).error(HttpStatus.UNAUTHORIZED.getReasonPhrase()).build());
+        response.getWriter().write(objectMapper.writeValueAsString(ErrorResponseFormat.builder().error("authentication required").status(HttpStatus.UNAUTHORIZED.getReasonPhrase()).build()));
     }
 }

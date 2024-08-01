@@ -15,9 +15,9 @@ public class ResponseBuilder {
     }
 
     public static <T> ResponseEntity<?> renderError(T message, HttpStatus httpStatus) {
-        ErrorResponseFormat<?> response = ErrorResponseFormat.<T>builder()
-                .message(message)
-                .error(httpStatus.getReasonPhrase())
+        ErrorResponseFormat<String> response = ErrorResponseFormat.<String>builder()
+                .error( message.toString().toLowerCase())
+                .status(httpStatus.getReasonPhrase())
                 .build();
         return ResponseEntity.status(httpStatus).body(response);
     }

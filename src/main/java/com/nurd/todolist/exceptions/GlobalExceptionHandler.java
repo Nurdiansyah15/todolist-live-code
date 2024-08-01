@@ -1,15 +1,16 @@
 package com.nurd.todolist.exceptions;
 
+import com.nurd.todolist.exceptions.override.ConflictException;
+import com.nurd.todolist.exceptions.override.CustomAccessDeniedException;
+import com.nurd.todolist.exceptions.override.CustomNotFoundException;
 import com.nurd.todolist.utils.dtos.formator.ResponseBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,12 +19,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        Map<String, String> errors = new HashMap<>();
-        e.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
+       StringBuilder errors = new StringBuilder();
+       for (FieldError error : e.getBindingResult().getFieldErrors()) {
+           errors.append(error.getField()).append(" : ").append(error.getDefaultMessage()).append(", \n");
+       }
         return ResponseBuilder.renderError(errors, HttpStatus.BAD_REQUEST);
     }
 
@@ -33,12 +32,27 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<?> handleJwtAuthException(IllegalStateException e) {
-        return ResponseBuilder.renderError(e.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> handleIllegalStateException(IllegalStateException e) {
+        return ResponseBuilder.renderError(e.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException e) {
         return ResponseBuilder.renderError(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<?> handleConflictException(ConflictException e) {
+        return ResponseBuilder.renderError(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(CustomNotFoundException.class)
+    public ResponseEntity<?> handleCustomNotFoundException(CustomNotFoundException e) {
+        return ResponseBuilder.renderError(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CustomAccessDeniedException.class)
+    public ResponseEntity<?> handleCustomAccessDeniedException(CustomAccessDeniedException e) {
+        return ResponseBuilder.renderError(e.getMessage(), HttpStatus.FORBIDDEN);
     }
 }

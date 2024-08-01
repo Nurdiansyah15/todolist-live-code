@@ -1,6 +1,6 @@
 package com.nurd.todolist.configs;
 
-import com.nurd.todolist.exceptions.override.CustomAccessDeniedException;
+import com.nurd.todolist.exceptions.override.CustomAccessDeniedHandler;
 import com.nurd.todolist.exceptions.override.CustomAuthEntryPoint;
 import com.nurd.todolist.securities.CustomAuthFilter;
 import com.nurd.todolist.securities.JwtAuthFilter;
@@ -25,7 +25,7 @@ import java.util.List;
 public class SecurityConfig {
 
     @Autowired
-    private CustomAccessDeniedException customAccessDeniedException;
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Autowired
     private CustomAuthEntryPoint customAuthEntryPoint;
@@ -62,7 +62,7 @@ public class SecurityConfig {
                                 .anyRequest().authenticated()
                 )
 
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(customAuthEntryPoint).accessDeniedHandler(customAccessDeniedException))
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(customAuthEntryPoint).accessDeniedHandler(customAccessDeniedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
