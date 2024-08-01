@@ -1,7 +1,7 @@
 package com.nurd.todolist.configs;
 
-import com.nurd.todolist.exceptions.override.CustomAccessDeniedHandler;
-import com.nurd.todolist.exceptions.override.CustomAuthEntryPoint;
+import com.nurd.todolist.exceptions.handlers.CustomAccessDeniedHandler;
+import com.nurd.todolist.exceptions.handlers.CustomAuthEntryPointHandler;
 import com.nurd.todolist.securities.CustomAuthFilter;
 import com.nurd.todolist.securities.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class SecurityConfig {
     private CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Autowired
-    private CustomAuthEntryPoint customAuthEntryPoint;
+    private CustomAuthEntryPointHandler customAuthEntryPointHandler;
 
     @Autowired
     private CustomAuthFilter customAuthFilter;
@@ -62,7 +62,7 @@ public class SecurityConfig {
                                 .anyRequest().authenticated()
                 )
 
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(customAuthEntryPoint).accessDeniedHandler(customAccessDeniedHandler))
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(customAuthEntryPointHandler).accessDeniedHandler(customAccessDeniedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

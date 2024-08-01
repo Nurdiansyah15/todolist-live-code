@@ -1,7 +1,7 @@
 package com.nurd.todolist.servs;
 
-import com.nurd.todolist.exceptions.override.CustomAccessDeniedException;
-import com.nurd.todolist.exceptions.override.CustomNotFoundException;
+import com.nurd.todolist.exceptions.exceptions.CustomAccessDeniedException;
+import com.nurd.todolist.exceptions.exceptions.CustomNotFoundException;
 import com.nurd.todolist.models.Status;
 import com.nurd.todolist.models.Todo;
 import com.nurd.todolist.models.User;
@@ -12,8 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 

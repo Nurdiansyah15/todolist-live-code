@@ -1,0 +1,26 @@
+services:
+  mysql:
+    container_name: mysql
+    image: mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=todolist
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+    networks:
+      - todolist
+  todolist:
+    container_name: todolist
+    image: todolist:1.0.0
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysql
+    networks:
+      - todolist
+
+networks:
+  todolist:
+    name: todolist

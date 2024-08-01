@@ -1,4 +1,4 @@
-package com.nurd.todolist.exceptions.override;
+package com.nurd.todolist.exceptions.handlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nurd.todolist.utils.dtos.formator.ErrorResponseFormat;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-public class CustomAuthEntryPoint implements AuthenticationEntryPoint {
+public class CustomAuthEntryPointHandler implements AuthenticationEntryPoint {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
 

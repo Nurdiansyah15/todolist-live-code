@@ -1,8 +1,8 @@
-package com.nurd.todolist.exceptions;
+package com.nurd.todolist.exceptions.handlers;
 
-import com.nurd.todolist.exceptions.override.ConflictException;
-import com.nurd.todolist.exceptions.override.CustomAccessDeniedException;
-import com.nurd.todolist.exceptions.override.CustomNotFoundException;
+import com.nurd.todolist.exceptions.exceptions.ConflictException;
+import com.nurd.todolist.exceptions.exceptions.CustomAccessDeniedException;
+import com.nurd.todolist.exceptions.exceptions.CustomNotFoundException;
 import com.nurd.todolist.utils.dtos.formator.ResponseBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,9 +10,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {

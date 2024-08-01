@@ -1,6 +1,6 @@
 package com.nurd.todolist.servs;
 
-import com.nurd.todolist.exceptions.override.ConflictException;
+import com.nurd.todolist.exceptions.exceptions.ConflictException;
 import com.nurd.todolist.models.Role;
 import com.nurd.todolist.models.User;
 import com.nurd.todolist.repos.UserRepo;
@@ -12,8 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Service

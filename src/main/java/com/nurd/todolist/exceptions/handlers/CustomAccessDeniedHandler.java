@@ -1,4 +1,4 @@
-package com.nurd.todolist.exceptions.override;
+package com.nurd.todolist.exceptions.handlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nurd.todolist.utils.dtos.formator.ErrorResponseFormat;
