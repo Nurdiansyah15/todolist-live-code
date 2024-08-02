@@ -1,16 +1,22 @@
-
 #
 # Build stage
 #
-FROM maven:3.6.0-jdk-11-slim AS build
-COPY src /home/app/src
-COPY pom.xml /home/app
-RUN mvn -f /home/app/pom.xml clean package
+FROM maven:3.8.5-openjdk-17 AS build
+WORKDIR /home/app
+
+# Copy the pom.xml and download dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copy the source code and build the application
+COPY src ./src
+RUN mvn clean package -DskipTests
 
 #
 # Package stage
 #
-FROM openjdk:11-jre-slim
-COPY --from=build /home/app/target/todolist-0.0.1-SNAPSHOT.jar /usr/local/lib/todolist.jar
+FROM eclipse-temurin:17-jre-focal
+WORKDIR /usr/local/lib
+COPY --from=build /home/app/target/to-do-list-0.0.1-SNAPSHOT.jar .
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/usr/local/lib/todolist.jar"]
+ENTRYPOINT ["java","-jar","/usr/local/lib/to-do-list-0.0.1-SNAPSHOT.jar"]
